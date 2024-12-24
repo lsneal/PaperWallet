@@ -54,12 +54,27 @@ def private_key_to_wif(private_key): #compressed=True):
     wif = base58.b58encode(extended_key_with_checksum).decode('utf-8')
     return wif
 
+def generate_qr_code(address):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(address)
+    qr.make(fit=True)
+    img = qr.make_image(fill='black', back_color='white')
+    img.show()
+
 def generate_paper_wallet():
     private_key = generate_private_key()
     public_key = generate_public_key(private_key)
     address = generate_bitcoin_address(public_key)
 
     wif = private_key_to_wif(private_key)
+    
+    generate_qr_code(public_key)
+    
     print(f"private_key WIF: {wif}")
     print(f"public_key: {public_key.hex()}")
     print(f"address: {address}")
